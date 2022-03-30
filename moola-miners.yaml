@@ -24,52 +24,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rng
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: rng
-  template:
-    metadata:
-      labels:
-        app: rng
-    spec:
-      containers:
-      - name: rng
-        image: 127.0.0.1:30000/rng:v0.1
-        ports:
-          - name: http-port
-            containerPort: 80
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: hasher
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: hasher
-  template:
-    metadata:
-      labels:
-        app: hasher
-    spec:
-      containers:
-      - name: hasher
-        image: 127.0.0.1:30000/hasher:v0.1
-        ports:
-          - name: http-port
-            containerPort: 80
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: worker
 spec:
   replicas: 4
@@ -87,26 +41,3 @@ spec:
         ports:
           - name: http-port
             containerPort: 80
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redis
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: redis
-  template:
-    metadata:
-      labels:
-        app: redis
-    spec:
-      containers:
-      - name: redis
-        image: redis
-        ports:
-          - name: http-port
-            containerPort: 6379
