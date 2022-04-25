@@ -1,12 +1,17 @@
-version: "2"
+version: "3"
 
 services:
+  backend:
+    build: backend
+    image: 127.0.0.1:30000/backend:v0.1
+    ports:
+    -"5000"
+
   webui:
     build: webui
+    image: 127.0.0.1:30000/webui:v0.1
     ports:
     - "8000:80"
-    volumes:
-    - "./webui/files/:/files/"
-    
-  worker:
-    build: worker
+
+  redis:
+    image: redis
