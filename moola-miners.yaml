@@ -24,20 +24,43 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: worker
+  name: backend
 spec:
-  replicas: 4
+  replicas: 1
   selector:
     matchLabels:
-      app: worker
+      app: backend
   template:
     metadata:
       labels:
-        app: worker
+        app: backend
     spec:
       containers:
-      - name: worker
-        image: 127.0.0.1:30000/worker:v0.1
+      - name: backend
+        image: 127.0.0.1:30000/backend:v0.1
         ports:
           - name: http-port
             containerPort: 80
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        ports:
+          - name: http-port
+            containerPort: 6379
