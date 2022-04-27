@@ -1,5 +1,5 @@
 FROM python:alpine
 RUN pip install Flask
-COPY rngcrypto.py /
-CMD ["python", "rngcrypto.py"]
+COPY backend.py /
+CMD ["python", "backend.py"]
 EXPOSE 80
