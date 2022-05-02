@@ -1,5 +1,5 @@
 FROM python:alpine
 RUN pip install Flask
-COPY backend.py /
-CMD ["python", "backend.py"]
+COPY app.py /
+CMD ["python", "app.py"]
 EXPOSE 80
