@@ -1,27 +1,19 @@
-# Import the Portal object.
 import geni.portal as portal
-# Import the ProtoGENI library.
-import geni.rspec.pg as pg
-
-# Create a portal context.
-pc = portal.Context()
+import geni.rspec.pg as rspec
 
 # Create a Request object to start building the RSpec.
-request = pc.makeRequestRSpec()
- 
-# Add a raw PC to the request.
-node = request.RawPC("node")
+request = portal.context.makeRequestRSpec()
+# Create a XenVM
+node = request.XenVM("node")
+node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU18-64-STD"
+node.routable_control_ip = "true"
 
-# Install and execute a script that is contained in the repository.
-node.addService(pg.Execute(shell="sh", command="/local/repository/silly.sh"))
-# setup Docker
-node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/install_docker.sh"))
-# setup Kubernetes
-node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/install_kubernetes.sh"))
-node.addService(pg.Execute(shell="sh", command="sudo swapoff -a"))
+node.addService(rspec.Execute(shell="/bin/sh", command="sudo apt update"))
+node.addService(rspec.Execute(shell="/bin/sh", command="sudo apt install -y apache2"))
+node.addService(rspec.Execute(shell="/bin/sh", command='sudo systemctl status apache2'))
 
 # Print the RSpec to the enclosing page.
-pc.printRequestRSpec(request)
+portal.context.printRequestRSpec()
 
   
   
