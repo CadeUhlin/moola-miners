@@ -1,49 +1,27 @@
+# Import the Portal object.
 import geni.portal as portal
+# Import the ProtoGENI library.
 import geni.rspec.pg as pg
-import geni.rspec.igext as IG
 
+# Create a portal context.
 pc = portal.Context()
+
+# Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
+ 
+# Add a raw PC to the request.
+node = request.RawPC("node")
 
-tourDescription = \
-"""
-This profile provides the template for a compute node with Docker installed on Ubuntu 18.04
-"""
+# Install and execute a script that is contained in the repository.
+node.addService(pg.Execute(shell="sh", command="/local/repository/silly.sh"))
+# setup Docker
+node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/install_docker.sh"))
+# setup Kubernetes
+node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/install_kubernetes.sh"))
+node.addService(pg.Execute(shell="sh", command="sudo swapoff -a"))
 
-#
-# Setup the Tour info with the above description and instructions.
-#  
-tour = IG.Tour()
-tour.Description(IG.Tour.TEXT,tourDescription)
-request.addTour(tour)
-
-prefixForIP = "192.168.1."
-link = request.LAN("lan")
-
-num_nodes = 4
-for i in range(num_nodes):
-  if i == 0:
-    node = request.XenVM("node")
-  else:
-    node = request.XenVM("worker-" + str(i))
-  node.cores = 8
-  node.ram = 8192
-  node.routable_control_ip = "true" 
-  node.disk_image = "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU18-64-STD"
-  iface = node.addInterface("if" + str(i))
-  iface.component_id = "eth1"
-  iface.addAddress(pg.IPv4Address(prefixForIP + str(i + 1), "255.255.255.0"))
-  link.addInterface(iface)
-  
-  # setup Docker
-  node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/install_docker.sh"))
-  # setup Kubernetes
-  node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/install_kubernetes.sh"))
-  node.addService(pg.Execute(shell="sh", command="sudo swapoff -a"))
-  
-  if i == 0:
-    node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/kube_manager.sh"))
-  else:
-    node.addService(pg.Execute(shell="sh", command="sudo bash /local/repository/kube_worker.sh"))
-    
+# Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
+
+  
+  
